@@ -1,21 +1,56 @@
 <template>
-  <div>
-    <h1>{{ product }}</h1>
-    <div class="cart">
-      <p>{{ description }}</p>
+  <div class="product-display">
+
+    <div class="product-container">
+      <div class="product-image">
+        <img v-bind:src="currentImage"
+             v-on:mouseover="changeColortoGreen"
+             v-on:mouseleave="changeColorToBlue"
+             alt="">
+      </div>
+      <div class="product-info">
+        <h1>{{ product }}</h1>
+        <p v-if="productCount > 10">Товара много в наличии</p>
+        <p v-else-if="productCount > 0 && productCount <=10">Осталось совсем немного</p>
+        <p v-else >Все закончилось</p>
+        <p>{{ description }}</p>
+        <a v-bind:href="urlForProduct">Подробное описание продукта</a>
+      </div>
     </div>
+
   </div>
 </template>
 
 <script>
+
+import image from './../assets/socks_green.jpg'
+import imageBlue from './../assets/socks_blue.jpg'
+
 export default {
+
   name: "MainComp",
   data: () => {
     return {
       title: 'Мок компонент круто',
       product: 'Крутые носки',
       description: 'Назначение (вид): На каждый день. Прикольные ' +
-          'Особенности носков: однотонные. Материал: 80% хлопок, 20% полиамид'
+          'Особенности носков: однотонные. Материал: 80% хлопок, 20% полиамид',
+      productImage: {
+        green: image,
+        blue: imageBlue
+      },
+      currentImage: imageBlue,
+      urlForProduct: 'https://l-a-b-a.com/lecture/1753-avtomatizacia-processov',
+      productCount: 0
+    }
+  },
+
+  methods: {
+    changeColortoGreen: function () {
+      this.currentImage = this.productImage.green;
+    },
+    changeColorToBlue: function () {
+      this.currentImage = this.productImage.blue;
     }
   }
 }
