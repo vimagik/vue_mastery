@@ -1,6 +1,5 @@
 <template>
   <div class="product-display">
-
     <div class="product-container">
       <div class="product-image">
         <img v-bind:src="currentImage"
@@ -9,12 +8,40 @@
              alt="">
       </div>
       <div class="product-info">
+        <div class="cart">Корзина ({{ cart }})</div>
         <h1>{{ product }}</h1>
+
         <p v-if="productCount > 10">Товара много в наличии</p>
         <p v-else-if="productCount > 0 && productCount <=10">Осталось совсем немного</p>
-        <p v-else >Все закончилось</p>
+        <p v-else>Все закончилось</p>
+
         <p>{{ description }}</p>
+
         <a v-bind:href="urlForProduct">Подробное описание продукта</a>
+
+        <div class="colorGroup">
+          <span v-for="(c, index) of color"
+                :key="index"
+                class="colorOfProduct color-circle"
+                :style="{backgroundColor: c}"
+                @click="changeColor(index)">
+          </span>
+        </div>
+
+        <p style="padding-top: 10px">Доступные размеры:
+          <span v-for="(elemets, i) of avaliableSizes" v-bind:key="i">
+            <span>{{ elemets }}</span>
+            <span v-if="i !== avaliableSizes.length - 1">, </span>
+          </span>
+        </p>
+
+        <button
+            class="button"
+            :disabled="productCount === 0"
+            :class="productCount === 0 ? 'disabledButton' : ''"
+            @click="cart = cart + 1"
+        >Купить</button>
+        <button class="button" @click="clearBusket">Очистить</button>
       </div>
     </div>
 
@@ -29,7 +56,7 @@ import imageBlue from './../assets/socks_blue.jpg'
 export default {
 
   name: "MainComp",
-  data: () => {
+  data() {
     return {
       title: 'Мок компонент круто',
       product: 'Крутые носки',
@@ -41,16 +68,29 @@ export default {
       },
       currentImage: imageBlue,
       urlForProduct: 'https://l-a-b-a.com/lecture/1753-avtomatizacia-processov',
-      productCount: 0
+      productCount: 0,
+      avaliableSizes: [38, 39, 40, 41, 42],
+      cart: 0,
+      color: ['green', 'blue']
     }
   },
 
   methods: {
-    changeColortoGreen: function () {
+    changeColortoGreen() {
       this.currentImage = this.productImage.green;
     },
-    changeColorToBlue: function () {
+    changeColorToBlue() {
       this.currentImage = this.productImage.blue;
+    },
+    changeColor(index) {
+      if (index === 0) {
+        this.changeColortoGreen();
+      } else {
+        this.changeColorToBlue();
+      }
+    },
+    clearBusket() {
+      this.cart = 0;
     }
   }
 }
@@ -97,6 +137,15 @@ body {
   margin-top: 8px;
   border: 2px solid #d8d8d8;
   border-radius: 50%;
+}
+
+.color-circle:hover {
+  cursor: pointer;
+}
+
+
+.colorGroup {
+  padding: 20px;
 }
 
 
@@ -222,6 +271,11 @@ textarea {
 
 ul {
   list-style-type: none;
+}
+
+.colorOfProduct {
+  padding: 10px;
+  color: blue;
 }
 
 @media only screen and (max-width: 600px) {
